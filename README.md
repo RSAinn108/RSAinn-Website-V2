@@ -1,11 +1,15 @@
-# RSAinn Static Website V2
+# RSAinn V3 — South Coast Showcase
 
-A mobile-friendly static site for Driftsands 108. Open `index.html` locally or publish the contents of this folder to GitHub Pages.
+Upload the contents of this ZIP to the GitHub Pages repository root.
 
-## Important
-- The calendar uses **illustrative** prices and does not represent live bookings.
-- Do not accept bookings or payments based on the preview calendar.
-- Connect a secure Supabase read-only availability API and admin-controlled pricing before enabling real-time availability. Never embed service-role keys in the site.
-- Property photographs are stored in `assets/photos/`, compressed as WebP.
-- WhatsApp enquiry destination: +27 67 890 8034.
-- Add licensed South Coast attraction photos/videos once available.
+## Included
+- Original V2 property gallery, branding, and WhatsApp contact
+- 13 new optimized coastal photos
+- 3 short web-ready MP4 video excerpts (24 seconds each), with poster images
+- Uvongo feature, Shelly Beach, Manaba, Margate, Ramsgate, surfing, marine life, sunrise and shipwreck sections
+
+## IMPORTANT: Availability
+The original V2 used demonstration nightly rates and no real bookings. This release intentionally does NOT show fake rates or claim availability. To enable live date selection, supply the quotation portal's public read-only availability endpoint or relevant schema and safe RLS policies. Never publish a service-role key, guest names or payments.
+
+## Before publishing
+Review all media labels, copyright permissions and location descriptions. Verify gallery photos are correctly matched to rooms. Test videos and responsive layout on a phone.
