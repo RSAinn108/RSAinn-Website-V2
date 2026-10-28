@@ -1,0 +1,1 @@
+Upload index.html and styles.css to repository root, and upload assets/day-trips/ folder with its five images. Do not remove or replace script.js or existing assets, especially compressed videos. Commit to main.
