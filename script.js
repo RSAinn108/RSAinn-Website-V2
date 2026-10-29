@@ -201,9 +201,19 @@ if (grid) {
         });
       }
 
-      if (key === checkIn || key === checkOut) {
-        button.classList.add('selected');
-      }
+     
+/* Highlight the full selected date range */
+if (
+  checkIn &&
+  (
+    key === checkIn ||
+    key === checkOut ||
+    (checkOut && key > checkIn && key < checkOut)
+  )
+) {
+  button.classList.add('selected');
+}
+
 
       grid.append(button);
     }
