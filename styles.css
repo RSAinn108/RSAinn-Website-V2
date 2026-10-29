@@ -173,3 +173,28 @@ footer .footer-logo {
   background: #8C1D18 !important;
 }
 
+/* RSAinn calendar — booked dates */
+#calendarGrid .cal-day.booked,
+#calendarGrid .cal-day.booked:disabled {
+  background: #8C1D18 !important;
+  border: 1px solid #8C1D18 !important;
+  color: #FFFFFF !important;
+  opacity: 1 !important;
+}
+
+#calendarGrid .cal-day.booked .date,
+#calendarGrid .cal-day.booked .rate {
+  color: #FFFFFF !important;
+  opacity: 1 !important;
+}
+
+/* Smaller Booked label on mobile */
+@media (max-width: 680px) {
+  #calendarGrid .cal-day.booked .rate {
+    font-size: 10px !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap;
+  }
+}
+
