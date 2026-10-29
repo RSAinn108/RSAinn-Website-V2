@@ -1,6 +1,6 @@
 
 // RSAinn V3.2 — Calendar Development
-// Live integration DISABLED pending security verification.
+// Public read-only calendar integration via restricted Supabase RPC functions.
 
 // MOBILE MENU
 const menu = document.querySelector('.menu');
@@ -28,7 +28,7 @@ if (year) {
 
 // SUPABASE CALENDAR CONFIGURATION
 const RSAINN_CALENDAR = Object.freeze({
-  enabled: false, // DO NOT CHANGE YET
+  enabled: true,
 
   supabaseUrl: 'https://xhxwjaobubxbretiqwsr.supabase.co',
 
@@ -37,8 +37,8 @@ const RSAINN_CALENDAR = Object.freeze({
 
   propertyId: 1,
 
-  ratesTable: 'website_rates',
-  availabilityTable: 'website_availability'
+  ratesFunction: 'website_public_rates',
+  availabilityFunction: 'website_public_availability'
 });
 
 // CALENDAR
@@ -62,6 +62,8 @@ if (grid) {
   let blocked = new Set();
   let checkIn = null;
   let checkOut = null;
+  let calendarReady = false;
+  let requestSequence = 0;
 
   const baseWhatsapp =
     'https://wa.me/27678908034?text=';
@@ -146,12 +148,14 @@ if (grid) {
 
       const active =
         RSAINN_CALENDAR.enabled &&
+        calendarReady &&
+        key >= dateKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()) &&
         rates.has(key) &&
         !booked;
 
       button.className =
         `cal-day ${
-          !RSAINN_CALENDAR.enabled
+          !RSAINN_CALENDAR.enabled || !calendarReady
             ? 'is-unavailable'
             : booked
             ? 'booked'
@@ -170,7 +174,7 @@ if (grid) {
       rate.className = 'rate';
 
       rate.textContent =
-        !RSAINN_CALENDAR.enabled
+        !RSAINN_CALENDAR.enabled || !calendarReady
           ? 'Enquire'
           : booked
           ? 'Booked'
@@ -205,29 +209,93 @@ if (grid) {
     }
   }
 
-  // LOAD AVAILABILITY
+  // PUBLIC RPC REQUESTS: never access private tables from the website.
+  async function publicRpc(functionName) {
+    const response = await fetch(
+      `${RSAINN_CALENDAR.supabaseUrl}/rest/v1/rpc/${functionName}`,
+      {
+        method: 'POST',
+        headers: {
+          apikey: RSAINN_CALENDAR.publishableKey,
+          'Content-Type': 'application/json'
+        },
+        body: '{}',
+        cache: 'no-store'
+      }
+    );
+    if (!response.ok) throw new Error(`Calendar feed error (${response.status})`);
+    const result = await response.json();
+    if (!Array.isArray(result)) throw new Error('Unexpected calendar response');
+    return result;
+  }
+
+  // LOAD RATES AND CONFIRMED BOOKED NIGHTS
   async function loadMonth() {
+    const requestId = ++requestSequence;
+    calendarReady = false;
     rates = new Map();
     blocked = new Set();
+    if (notice) notice.textContent = 'Checking live rates and availability…';
+    render();
 
     if (!RSAINN_CALENDAR.enabled) {
-      if (notice) {
-        notice.textContent =
-          'Availability sync is not yet configured. Dates and rates are hidden to avoid misleading guests. Please contact RSAinn to check dates.';
-      }
-
-      render();
+      if (notice) notice.textContent = 'Please contact RSAinn to confirm availability.';
       return;
     }
 
-    // Future verified public read-only feed goes here.
-    // No requests to private booking/customer tables.
+    try {
+      const [bookings, rateRows] = await Promise.all([
+        publicRpc(RSAINN_CALENDAR.availabilityFunction),
+        publicRpc(RSAINN_CALENDAR.ratesFunction)
+      ]);
+      if (requestId !== requestSequence) return;
 
-    if (notice) {
-      notice.textContent =
-        'Calendar feed requires verification. Please contact RSAinn to confirm dates.';
+      const monthStart = dateKey(view.getFullYear(), view.getMonth(), 1);
+      const monthEnd = dateKey(view.getFullYear(), view.getMonth() + 1, 1);
+      const nextRates = new Map();
+      const nextBlocked = new Set();
+
+      for (const r of rateRows) {
+        if (Number(r.property_id) !== RSAINN_CALENDAR.propertyId) continue;
+        const date = String(r.rate_date || '').slice(0, 10);
+        const price = Number(r.nightly_rate);
+        if (date >= monthStart && date < monthEnd && Number.isFinite(price) && price > 0) {
+          nextRates.set(date, price);
+        }
+      }
+
+      for (const b of bookings) {
+        if (Number(b.property_id) !== RSAINN_CALENDAR.propertyId) continue;
+        const from = String(b.check_in || '').slice(0, 10);
+        const until = String(b.check_out || '').slice(0, 10);
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(from) || !/^\d{4}-\d{2}-\d{2}$/.test(until)) continue;
+        const first = from > monthStart ? from : monthStart;
+        const last = until < monthEnd ? until : monthEnd;
+        if (first >= last) continue;
+        for (let d = new Date(`${first}T12:00:00`);
+             dateKey(d.getFullYear(), d.getMonth(), d.getDate()) < last;
+             d.setDate(d.getDate() + 1)) {
+          nextBlocked.add(dateKey(d.getFullYear(), d.getMonth(), d.getDate()));
+        }
+      }
+
+      rates = nextRates;
+      blocked = nextBlocked;
+      calendarReady = true;
+      if (checkIn && !safeRange(checkIn, checkOut || checkIn)) {
+        checkIn = null;
+        checkOut = null;
+        updateSelection();
+      }
+      if (notice) notice.textContent = 'Rates and availability are indicative and subject to confirmation. Request a quote on WhatsApp.';
+    } catch (error) {
+      if (requestId !== requestSequence) return;
+      console.error('RSAinn public calendar could not load:', error);
+      rates = new Map();
+      blocked = new Set();
+      calendarReady = false;
+      if (notice) notice.textContent = 'Live availability is temporarily unavailable. Please contact RSAinn to confirm dates and prices.';
     }
-
     render();
   }
 
@@ -235,12 +303,14 @@ if (grid) {
   document.getElementById('prevMonth')
     ?.addEventListener('click', () => {
       view.setMonth(view.getMonth() - 1);
+      checkIn = null; checkOut = null; updateSelection();
       loadMonth();
     });
 
   document.getElementById('nextMonth')
     ?.addEventListener('click', () => {
       view.setMonth(view.getMonth() + 1);
+      checkIn = null; checkOut = null; updateSelection();
       loadMonth();
     });
 
