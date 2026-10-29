@@ -208,3 +208,15 @@ footer .footer-logo {
   }
 }
 
+/* RSAinn mobile calendar — compact labels */
+@media screen and (max-width: 680px) {
+  #calendarGrid .cal-day .rate {
+    font-size: 8px !important;
+    line-height: 1 !important;
+    letter-spacing: -0.2px !important;
+    white-space: nowrap !important;
+    overflow: visible;
+    text-transform: none !important;
+  }
+}
+
