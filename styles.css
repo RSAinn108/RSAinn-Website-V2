@@ -153,3 +153,23 @@ footer .footer-logo {
   }
 }
 
+/* RSAinn calendar — clearly highlighted booked nights */
+#calendarGrid .cal-day.booked,
+#calendarGrid .cal-day.booked:disabled {
+  background: #8C1D18 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #8C1D18 !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+}
+
+#calendarGrid .cal-day.booked .date,
+#calendarGrid .cal-day.booked .rate {
+  color: #FFFFFF !important;
+  opacity: 1 !important;
+}
+
+#calendarGrid .cal-day.booked:hover {
+  background: #8C1D18 !important;
+}
+
