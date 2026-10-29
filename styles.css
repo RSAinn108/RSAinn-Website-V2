@@ -7,26 +7,38 @@
 
 .hero:after{display:none}.wide-video{max-width:1200px;margin:auto;background:#0f2b26;color:#f4efe6;border-radius:12px;overflow:hidden}.wide-video video{display:block;width:100%;max-height:580px;object-fit:cover;background:#0f2b26}.video-caption{padding:28px 34px}.video-caption h3{margin:6px 0 12px}.coast-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;max-width:1200px;margin:auto}.coast-card{overflow:hidden;border-radius:10px;background:#fff;box-shadow:0 6px 24px #0f2b2614}.coast-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}.coast-card>div{padding:15px 23px 22px}.coast-card h3,.experience-grid h3{font-size:25px;margin:8px 0}.coast-card p{margin:0;color:#52665e}.experience-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:25px;max-width:1200px;margin:0 auto 36px}.experience-grid article{background:#f4efe6;padding:14px;border-radius:10px}.experience-grid video{width:100%;aspect-ratio:16/9;object-fit:cover;background:#0f2b26;border-radius:7px}.experience-grid h3,.experience-grid p{margin-left:10px;margin-right:10px}.scenic-grid{grid-template-columns:repeat(3,minmax(0,1fr))}html{scroll-padding-top:90px}.cal-day.is-unavailable{background:#f9eeee;color:#8C1D18}.cal-day .rate{overflow-wrap:anywhere}@media(max-width:680px){.coast-grid,.experience-grid{grid-template-columns:1fr}.scenic-grid{grid-template-columns:1fr}.video-caption{padding:20px}.cal-day{min-width:0}.cal-day .rate{font-size:8px}}
 
-/* RSAinn Official Logo */
+
+/* RSAinn Official Logo - Updated */
 header .brand {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  width: 220px;
+  overflow: visible;
 }
 
 header .header-logo {
   display: block;
-  width: 155px;
-  height: 76px;
+  width: 210px;
+  height: 90px;
+  max-width: none;
   object-fit: contain;
-  mix-blend-mode: screen;
+  opacity: 1;
+  mix-blend-mode: normal;
+  filter: brightness(1.2) contrast(1.1);
 }
 
+/* Tablet and mobile */
 @media (max-width: 768px) {
+  header .brand {
+    width: 135px;
+  }
+
   header .header-logo {
-    width: 115px;
-    height: 60px;
+    width: 130px;
+    height: 65px;
   }
 }
+
 /* V3.2 Day Trips & Attractions */
 .daytrip-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}.daytrip-card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 8px 26px rgba(15,43,38,.12);transition:transform .25s,box-shadow .25s}.daytrip-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(15,43,38,.18)}.daytrip-card img{display:block;width:100%;height:230px;object-fit:cover}.daytrip-copy{padding:20px 22px 26px}.daytrip-copy h3{font-size:25px;margin:0 0 10px;color:var(--deep)}.daytrip-copy p{margin:0;color:#52665e;line-height:1.7}.daytrip-note{max-width:850px;margin:32px auto 0;text-align:center;font-size:12px;color:#68766f}@media(max-width:900px){.daytrip-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.daytrip-grid{grid-template-columns:1fr;gap:18px}.daytrip-card img{height:230px}.daytrip-copy{padding:17px 19px 22px}}
