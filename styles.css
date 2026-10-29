@@ -243,3 +243,23 @@ footer .footer-logo {
   }
 }
 
+/* RSAinn selected calendar dates — gold highlight */
+#calendarGrid .cal-day.selected,
+#calendarGrid .cal-day.selected:hover {
+  background: #D4AF37 !important;
+  border: 2px solid #B18D1B !important;
+  color: #0F2B26 !important;
+  opacity: 1 !important;
+}
+
+#calendarGrid .cal-day.selected .date,
+#calendarGrid .cal-day.selected .rate {
+  color: #0F2B26 !important;
+}
+
+/* Keep booked dates red */
+#calendarGrid .cal-day.booked {
+  background: #8C1D18 !important;
+  color: #FFFFFF !important;
+}
+
